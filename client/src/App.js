@@ -9,11 +9,12 @@ function App() {
   const [country,setCountry] = useState('');
   const [error, setError] = useState(null);
   const [renderCountry, setRenderCountry] = useState({});
-
   //handling multiples countryes
   const [countriesResponse, setCountriesResponse] = useState([]);
   //user input countries
   const [countries, setCountries] = useState('');
+  //response from API
+  const [retrieveCountries, setRetrieve] = useState([]);
 
 
 
@@ -32,10 +33,11 @@ const handleSubmit = (e) => {
   //preventing default behavior
   e.preventDefault();
 
-  fetch( `/api/${country}`)
+
+  fetch(`/api/${country}`)
     .then(res => res.json())
     .then(res => setRenderCountry(res))
-    .catch(err => setError(err))
+    .catch(err => setError(err.message))
 
     //cleaning the state after submitting
     setCountry('');
@@ -45,26 +47,19 @@ const handleSubmit = (e) => {
 
 
 ///second call for several countries
+//NNED TO DISPLAY THIS DATA IN THE UI
 const handleSubmitCountries = (e) => {
-        e.preventDefault();
+  e.preventDefault();
+  //fetching the countries
+  fetch(`/api/countries/${countries}`)
+    .then(res => res.json())
+    .then(res => setRetrieve(res))
+    .catch(e => setError(e.message))
 
-        const countriesToSend = countries.split('').map(s => s.slice(0,2))
-
-        //make a post request
-
-        fetch(`/api/${countries}`, {
-          method: 'POST',
-          headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-          },
-          body:JSON.stringify(countriesToSend)
-        }).then(res => res.json())
-          .then(res =>  console.log(res))
-          .catch(e => console.log(e))
-
+    //cleaning the state
+    setCountries('');
 }
-
+  console.log(retrieveCountries, 'countries from API call ')
 
   return (
     <div className="App">

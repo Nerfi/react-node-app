@@ -4,18 +4,30 @@ const PORT = process.env.PORT || 3004;
 const fetch = require('node-fetch');
 const app = express();
 
-//delete thos route after, was useful just to set up server
-/*app.get("/api", (req, res) => {
+//this endpoint will call all the countries
+app.get("/api/all", async (req, res) => {
+  //endpoint to make the call
+  //THIS ENDPOINT IS WORKING
+//  https://restcountries.eu/rest/v2/all
+
+  try{
+
+    const apiResponse = await fetch('https://restcountries.eu/rest/v2/all')
+    const apiResponseJson =  await apiResponse.json();
+    res.send(apiResponseJson)
+
+  } catch(e) {
+    res.status(500).send('Something went wrong with all the countries')
+  }
 
   res.json({ message: "Hello from ddserver!" });
 });
 
-*/
 
-app.get("/api/:country?", async (req, res) => {
-  //getting the country
+
+app.get("/api/:country", async (req, res) => {
+  //getting the country typed by the user
   const {country} = req.params;
-  console.log(country)
 
 
   try {
@@ -33,28 +45,29 @@ app.get("/api/:country?", async (req, res) => {
 
 //get list of countries from front end
 
-app.post("/api/:countries", async (req, res) => {
+app.get("/api/countries/:codes", async (req, res) => {
 
-  //console.log(typeof req.params.countries + ' ' +   'parasm from :countries yeee')
-  const params = req.params.countries;
-console.log(typeof params, 'the params ')
-
-  try {
-    const endPoint = "https://restcountries.eu/rest/v2/alpha?codes=";
-    const response = await fetch(endpoint)
-    const parseResponse = await response.json()
-    res.send(parseResponse, 'parse response')
-
-
-  }catch(err) {
-    res.status(500).send('not fetching the whole countries')
-  }
   //endpoint to make request
   //https://restcountries.eu/rest/v2/alpha?codes={code};{code};{code}
+
+
+  const params = req.params;
+  //need to send params to the url, NOT DONE YET
+  console.log( params.codes.split(' ').join(), 'the params send ')
+
+  try {
+    const response = await fetch("https://restcountries.eu/rest/v2/alpha?codes=col;no;ee")
+    const parseResponse = await response.json();
+    res.send(parseResponse)
+
+
+  } catch(err) {
+    res.status(500).send('not fetching the whole countries')
+  }
 
 })
 
 
 app.listen(PORT, () => {
-  console.log('adssadasfasdfasdSADFASDFasdnodemo' + PORT)
+  console.log('nodemo' + PORT)
 })
