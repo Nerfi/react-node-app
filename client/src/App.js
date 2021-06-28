@@ -58,7 +58,7 @@ const handleSubmitCountries = (e) => {
 
     //cleaning the state
     setCountries('');
-}
+}  ///working as getting otput as expected
   console.log(retrieveCountries, 'countries from API call ')
 
   return (
