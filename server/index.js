@@ -6,21 +6,18 @@ const app = express();
 
 //this endpoint will call all the countries
 app.get("/api/all", async (req, res) => {
-  //endpoint to make the call
-  //THIS ENDPOINT IS WORKING
-//  https://restcountries.eu/rest/v2/all
+
 
   try{
 
     const apiResponse = await fetch('https://restcountries.eu/rest/v2/all')
-    const apiResponseJson =  await apiResponse.json();
+    const apiResponseJson =  await apiResponse.json()
     res.send(apiResponseJson)
 
   } catch(e) {
     res.status(500).send('Something went wrong with all the countries')
   }
 
-  res.json({ message: "Hello from ddserver!" });
 });
 
 
@@ -50,7 +47,7 @@ app.get("/api/countries/:codes", async (req, res) => {
   //endpoint to make request
   //https://restcountries.eu/rest/v2/alpha?codes={code};{code};{code}
 
-
+//THIS METHOD NEED TO BE FINISHED
   const params = req.params;
   //need to send params to the url, NOT DONE YET
   console.log( params.codes.split(' ').join(), 'the params send ')

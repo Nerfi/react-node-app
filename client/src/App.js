@@ -16,6 +16,11 @@ function App() {
   //response from API
   const [retrieveCountries, setRetrieve] = useState([]);
 
+  //search country by name
+  const [countryQuery, setQuery] = useState('');
+  //state to store the countries reteive by the user query
+  const [countryQueryBack, setQueryBack] = useState([]);
+
 
 
 
@@ -41,12 +46,9 @@ const handleSubmit = (e) => {
 
     //cleaning the state after submitting
     setCountry('');
-
-
 }
 
 
-///second call for several countries
 //NNED TO DISPLAY THIS DATA IN THE UI
 const handleSubmitCountries = (e) => {
   e.preventDefault();
@@ -58,10 +60,45 @@ const handleSubmitCountries = (e) => {
 
     //cleaning the state
     setCountries('');
-}  ///working as getting otput as expected
-  console.log(retrieveCountries, 'countries from API call ')
+}
+
+//fethcing all the countries
+
+const fetchAll = () => {
+  fetch("/api/all")
+  .then(res => res.json())
+  .then(res => setQueryBack(res) )
+  .catch(e => setError(e.message))
+}
+
+//calling the function in  a useEffect
+useEffect(() => {
+  fetchAll()
+},[countryQuery])
+
+
+
+//new function
+const handleUserSeacrchQuery = (e) => {
+
+    const keyword = e.target.value;
+
+    if (keyword !== '') {
+      const results = countryQueryBack.filter((country) => {
+        return country.name.toLowerCase().startsWith(keyword.toLowerCase());
+        // Use the toLowerCase() method to make it case-insensitive
+      });
+      setQueryBack(results);
+    } else {
+      setQueryBack(countryQueryBack)
+      // If the text field is empty, show all users
+    }
+
+    setQuery(keyword);
+  };
 
   return (
+    <>
     <div className="App">
     {error && error}
     <form onSubmit={handleSubmit}>
@@ -76,7 +113,9 @@ const handleSubmitCountries = (e) => {
     </form>
 
 
-    <div className="renderCountry">
+
+    </div>
+    <div className="renderCountry" style={{display: 'flex', justifyContent: 'center', margin: '50px'}}>
 
       <li>{renderCountry[0]?.name}</li>
       <li>{renderCountry[0]?.capital}</li>
@@ -84,7 +123,31 @@ const handleSubmitCountries = (e) => {
 
     </div>
 
+    <div className="searchCountry" style={{width: '300px', margin: 'auto'}}>
+
+      <input
+      type="text"
+      placeholder="search a spefici country"
+      value={countryQuery}
+      onChange={handleUserSeacrchQuery}
+      />
+
+       <div className="country-list">
+        {countryQueryBack && countryQueryBack.length > 0 ? (
+          countryQueryBack.map((user) => (
+            <li key={user.id} className="user">
+              <span className="user-id">{user.id}</span>
+              <span className="user-name">{user.name}</span>
+            </li>
+          ))
+        ) : (
+          <h1>No results found!</h1>
+        )}
+      </div>
+
     </div>
+
+    </>
   );
 }
 
