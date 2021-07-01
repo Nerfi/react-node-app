@@ -3,6 +3,26 @@ const PORT = process.env.PORT || 3004;
 //node fetch pacakge
 const fetch = require('node-fetch');
 const app = express();
+const passport = require('passport');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+//importing the user
+const User = require('./models/User');
+
+
+dotenv.config();
+
+
+//connecting to DB, THIS NEED TO BE FINISH and pass the correct password
+mongoose.connect(process.env.DB_CONNECT,{ useNewUrlParser: true , useUnifiedTopology: true }, () => console.log('connected to mongo'))
+
+
+//settings
+app.use(express.json());
+
+
+
 
 //this endpoint will call all the countries
 app.get("/api/all", async (req, res) => {
@@ -63,6 +83,31 @@ app.get("/api/countries/:codes", async (req, res) => {
   }
 
 })
+
+//creating routes sigin, signup, login, logout
+//puede que tengamos que borrar algunos de estos get ya que no valen para nada creo
+
+app.post("/api/register", async (req, res) => {
+
+  const user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  })
+
+  try {
+    const savedUser = await user.save();
+    res.send(savedUser);
+
+  } catch(err) {
+    res.status(400).send(err + 'there was an error ')
+  }
+
+//  res.send({name, email, password} = user)
+})
+
+
+
 
 
 app.listen(PORT, () => {
