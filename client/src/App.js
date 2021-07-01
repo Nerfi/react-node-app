@@ -3,14 +3,12 @@ import {useState, useEffect} from 'react';
 
 function App() {
 
-  //this state must be delete afterwars
-  const [data, setData] = useState(null);
+
 
   const [country,setCountry] = useState('');
   const [error, setError] = useState(null);
   const [renderCountry, setRenderCountry] = useState({});
-  //handling multiples countryes
-  const [countriesResponse, setCountriesResponse] = useState([]);
+
   //user input countries
   const [countries, setCountries] = useState('');
   //response from API
@@ -127,7 +125,7 @@ const handleUserSeacrchQuery = (e) => {
 
       <input
       type="text"
-      placeholder="search a spefici country"
+      placeholder="search a country"
       value={countryQuery}
       onChange={handleUserSeacrchQuery}
       />
