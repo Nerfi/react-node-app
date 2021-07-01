@@ -3,23 +3,17 @@ import {useState, useEffect} from 'react';
 
 function App() {
 
-
-
   const [country,setCountry] = useState('');
   const [error, setError] = useState(null);
   const [renderCountry, setRenderCountry] = useState({});
-
   //user input countries
   const [countries, setCountries] = useState('');
   //response from API
   const [retrieveCountries, setRetrieve] = useState([]);
-
   //search country by name
   const [countryQuery, setQuery] = useState('');
   //state to store the countries reteive by the user query
   const [countryQueryBack, setQueryBack] = useState([]);
-
-
 
 
   //handling change on input value
