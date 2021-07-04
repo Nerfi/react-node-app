@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     max: 1024,
     min: 6
-  }
+  },
+
 })
 
 
