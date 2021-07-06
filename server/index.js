@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const app = express();
 const passport = require('passport');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
+const dotenv = require("dotenv");
 //importing the user
 const User = require('./models/User');
 //importing validation function
@@ -20,8 +20,7 @@ const jwt = require('jsonwebtoken');
 
 
 
-//dotenv.config();
-
+dotenv.config();
 //connecting to DB, THIS NEED TO BE FINISH and pass the correct password
 mongoose.connect(process.env.DB_CONNECT,{ useNewUrlParser: true , useUnifiedTopology: true, useCreateIndex: true }, () => console.log('connected to mongo'))
 
@@ -37,7 +36,7 @@ app.get("/api/all", async (req, res) => {
   try{
 
     const apiResponse = await fetch('https://restcountries.eu/rest/v2/all')
-    const apiResponseJson =  await apiResponse.json()
+    const apiResponseJson =  await apiResponse.json();
     res.send(apiResponseJson)
 
   } catch(e) {
@@ -91,22 +90,22 @@ app.get("/api/countries/:codes", async (req, res) => {
 })
 
 //creating routes sigin, signup, login, logout
-//puede que tengamos que borrar algunos de estos get ya que no valen para nada creo
-
-
-
+/*
 
 app.post("/api/register", async (req, res) => {
   //destructuring the req object in order to get name, email, password
   const {email,name,password} = req.body;
-  const {error} = registerValidation(req.body);
+
+  console.log(email, name, password)
+  //const {error} = registerValidation(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
+
 
   //checking if the user is already in the DB
   const emailExist =  await User.findOne({email: email});
 
-  if(emailExist) return res.status(400).send('Email already exist');
+  if(emailExist) return res.status(400).json('there was an errp') // not showing on front end
 
   //hash the password
 
@@ -125,8 +124,45 @@ app.post("/api/register", async (req, res) => {
     res.send(savedUser);
 
   } catch(err) {
-    res.status(400).send(err + '' +  'there was an error ')
+    //res.status(400).send(err + '' +  'there was an error ')
+    //res.status(400).send('there was an error ') // not showing
+    res.send('la cagaste loco ')
+
   }
+
+})
+*/
+
+
+
+app.post("/api/register", async(req,res) => {
+
+ const {email,name,password} = req.body;
+
+ const {error} = await registerValidation(req.body)
+
+    if (!error) {
+        return res.status(400).json(error.details[0].message)
+    }
+
+
+  const salt = await bcrypt.genSalt(10)
+  const hashPassword = await bcrypt.hash(password, salt)
+
+    const user = await User.findOne({ email })
+    if (user) {
+        res.status(400).json({ error: 'user already exists ' })
+    } else {
+        const newUser = new User({name, email, password: hashPassword})
+        const saveUser = await newUser.save()
+        if (saveUser) {
+            res.status(200).json(saveUser)
+        } else {
+            res.status(400).json({
+                error: 'failed to save the user'
+            })
+        }
+    }
 
 })
 
@@ -149,10 +185,6 @@ app.post("/api/login", async (req, res) => {
   res.header('auth-token', token).send(token)
 
  // res.send('success login ')
-
-
-
-
 
 });
 
