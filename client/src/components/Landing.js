@@ -129,11 +129,12 @@ const handleUserSeacrchQuery = (e) => {
       />
 
        <div className="country-list">
-        {countryQueryBack && countryQueryBack.length > 0 ? (
-          countryQueryBack.map((user) => (
-            <li key={user.id} className="user">
-              <span className="user-id">{user.id}</span>
-              <span className="user-name">{user.name}</span>
+        {countryQueryBack && countryQueryBack  ? (
+          countryQueryBack.map((country, index) => (
+
+            <li key={index + 1} className="country">
+              <span className="country-id">{country.id}</span>
+              <span className="country-name">{country.name}</span>
             </li>
           ))
         ) : (

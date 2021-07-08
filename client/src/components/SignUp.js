@@ -1,5 +1,5 @@
 import  React, {useState} from 'react';
-
+import {useHistory} from 'react-router-dom';
 
 const SignUp = () => {
 
@@ -7,6 +7,7 @@ const SignUp = () => {
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
  const [error, setError] = useState(null);
+ const history = useHistory();
 
  const handleSubmit = (e) => {
 
@@ -20,15 +21,22 @@ const SignUp = () => {
     body: JSON.stringify({ name , email, password})
    }
 
-   fetch('/api/register', options)
-    .then(res =>  res.json())
-    .then(res =>  console.log(res, 'this is the bloody res'))
-    .catch(e => setError(e))
-
-    if(error) return alert('somehi went wrong ')
-
-
-
+    fetch('/api/register', options)
+     .then(res => {
+      //not sure if this is the best way but it works
+      if(!res.ok) {
+       return res.json()
+      }
+      else {
+        return res.json()
+      }
+    })
+      .then(res => {
+        console.log(res, 'second res')
+        if(!res.error) history.push("/")
+        if(res.error) setError(res.error)
+      })
+      .catch(e =>  setError(e.message))
 
  };
 
