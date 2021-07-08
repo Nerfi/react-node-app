@@ -32,17 +32,21 @@ const SignUp = () => {
       }
     })
       .then(res => {
-        console.log(res, 'second res')
+        localStorage.setItem( "user",res.name)
+        const userStore = localStorage.getItem('user')
+
         if(!res.error) history.push("/")
         if(res.error) setError(res.error)
       })
       .catch(e =>  setError(e.message))
 
  };
-
+//console.log(user)
   return(
     <>
+
     {error && error}
+    {localStorage.getItem('user') }
     <div className="signup" style={{display: 'flex', justifyContent: 'center'}}>
       <form onSubmit={handleSubmit}>
       <input type="text" placeholder="name" value={name} onChange={(e) => setName(e.target.value)}/>
