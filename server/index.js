@@ -96,7 +96,6 @@ app.post("/api/register", async (req,res) => {
 
 
   const {error} = registerValidation(req.body)
-  console.log(error, 'backend error') // so far working on front end
   if (error) return res.status(400).json({error: error.details[0].message});
 
 
